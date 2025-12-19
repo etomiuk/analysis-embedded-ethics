@@ -1,0 +1,10 @@
+# Environments
+venv/
+.env
+
+# Python
+__pycache__/
+.ipynb_checkpoints/
+
+# Data
+data/
