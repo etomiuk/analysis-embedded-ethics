@@ -8,6 +8,7 @@ __pycache__/
 
 # Data
 data/
+preprocessing/semester_cleaning.py
 
 # Figures
 results/
