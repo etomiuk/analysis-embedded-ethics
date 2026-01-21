@@ -15,3 +15,12 @@ def rebuild_multiindex(d):
             new_cols.append(col)
 
     d.columns = pd.MultiIndex.from_tuples(new_cols)
+
+
+# function for plotting the percentages and n values on pie chart (credits: stackoverflow)
+def autopct_format(values):
+    def my_format(pct):
+        total = sum(values)
+        val = int(round(pct*total/100.0))
+        return '{:.1f}%({v:d})'.format(pct, v=val)
+    return my_format
