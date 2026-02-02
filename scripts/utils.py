@@ -154,3 +154,47 @@ def autopct_format(values):
         val = int(round(pct*total/100.0))
         return '{:.1f}%({v:d})'.format(pct, v=val)
     return my_format
+
+
+# function for setting pie chart labels nicely
+def pie_labels(autotexts, max_pct, distance_from_edge):
+    for autotext in autotexts:
+        x, y = autotext.get_position()
+        pct = float(autotext.get_text().split("%")[0])
+        if pct == 0:
+            autotext.set_visible(False)
+        elif pct < max_pct:
+            autotext.set_position((x*distance_from_edge, y*distance_from_edge))
+
+# pie chart for comparing EE vs CG group
+def pie_demographics_group(counts_ee, counts_cg, n_ee, n_cg, legend_groups, title):
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7, 4), constrained_layout=True, sharey=True) # draw two plots in one row, two columns
+
+    patches, texts, autotexts1 = ax1.pie(counts_ee.values, autopct=autopct_format(counts_ee.values))
+    patches, texts, autotexts2 = ax2.pie(counts_cg.values, autopct=autopct_format(counts_cg.values))
+
+    pie_labels(autotexts1, 5, 2.1)
+    pie_labels(autotexts2, 5, 2.1)
+
+    fig.suptitle(title)
+    ax1.set_title("EE courses")
+    ax2.set_title("Control group courses")
+    ax1.annotate(f"n = {n_ee}", xy=(-0.16, 1.1))
+    ax2.annotate(f"n = {n_cg}", xy=(-0.15, 1.1))
+    fig.legend(legend_groups, loc='center right', bbox_to_anchor=(1.30, 0.5))
+
+    plt.show()
+
+# pie chart for comparing demographics per course
+def pie_demographics_course(counts, n_courses_df, courses, legend_groups, title):
+    fig, axes = plt.subplots(2, 3, figsize=(8, 4), constrained_layout=True, sharey=True) # draw two plots in one row, two columns
+
+    for i, course in enumerate(courses):
+        row, col = i//3, i%3
+        patches, texts, autotexts = axes[row, col].pie(counts[course].values, autopct='%.1f%%')
+        axes[row, col].set_title(course)
+        axes[row, col].annotate(f"n = {n_courses_df.loc[n_courses_df["course"] == course, "count"].item()}", xy=(-0.3, 1.1))
+        pie_labels(autotexts, 11, 2.3)
+
+    fig.suptitle(title)
+    fig.legend(legend_groups, loc='center right', bbox_to_anchor=(1.15, 0.5))
